@@ -91,6 +91,7 @@ function CreateWebsite( [string]$siteName, [int]$port, [string]$path ) {
 	$newSite.AnonymousUserPass = $password   #sets user password
 	$newSite.AuthAnonymous = $True
 	$newSite.AppPoolId = $siteName
+	$newSite.AppFriendlyName=$siteName
 	$newSite.Put()
 	
     $server = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebServer" -Filter "Name='$($newSite.Name)'"
