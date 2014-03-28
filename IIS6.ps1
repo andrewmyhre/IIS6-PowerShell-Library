@@ -76,7 +76,12 @@ function WebsiteExists( [string]$siteName ) {
     (Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class IISWebServerSetting -Filter "ServerComment = '$siteName'") -ne $null
 }
 
-function CreateWebsite( [string]$siteName, [int]$port, [string]$path ) {
+function CreateWebsite( 
+	[Parameter(Mandatory=$true)][string]$siteName, 
+	[Parameter(Mandatory=$true)][int]$port, 
+	[Parameter(Mandatory=$true)][string]$path, 
+	[Parameter(Mandatory=$true)][string]$identity, 
+	[Parameter(Mandatory=$true)][SecureString]$password) {
     $binding = ([wmiclass]"root/MicrosoftIISv2:ServerBinding").CreateInstance()
     $binding.Hostname = ""
     $binding.IP = ""
