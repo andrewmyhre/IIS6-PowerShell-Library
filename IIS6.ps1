@@ -93,8 +93,6 @@ function CreateWebsite( [string]$siteName, [int]$port, [string]$path ) {
 	$newSite.AppPoolId = $siteName
 	$newSite.AppFriendlyName=$siteName
 	$newSite.Put()
-	$newSite.Name=$siteName
-	$newSite.Put()
 	
     $server = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebServer" -Filter "Name='$($newSite.Name)'"
     $server.Start()
