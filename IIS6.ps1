@@ -133,6 +133,11 @@ function GetAppPool($name) {
 }
 
 function CreateAppPool($appPoolName, $userName, $password) {
+	if (GetAppPool -name $siteName)
+	{
+		Write-Host "Application pool '$appPoolName' already exists"
+		return
+	}
     $appPoolSettings = [wmiclass]'root\MicrosoftIISv2:IISApplicationPoolSetting'
     $newPool = $appPoolSettings.CreateInstance()
     $newPool.Name = "W3SVC/AppPools/$appPoolName"
