@@ -92,6 +92,7 @@ function CreateWebsite( [string]$siteName, [int]$port, [string]$path ) {
 	$newSite.AuthAnonymous = $True
 	$newSite.AppPoolId = $siteName
 	$newSite.AppFriendlyName=$siteName
+	$newSite.Put()
 	$newSite.Name=$siteName
 	$newSite.Put()
 	
