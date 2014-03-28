@@ -84,8 +84,19 @@ function CreateWebsite( [string]$siteName, [int]$port, [string]$path ) {
     $iisService = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebService" -Filter "Name='W3SVC'"
     $iisService.CreateNewSite($siteName, $binding, $path) | Out-Null
     $newSite = (GetWebsite $siteName)
+	Write-Host $newSite
+	$newSite.AccessExecute = $True               #sets execuatable access
+	$newSite.AccessScript = $True                #sets script access
+	$newSite.AnonymousUserName = $identity   #sets user name
+	$newSite.AnonymousUserPass = $password   #sets user password
+	$newSite.AuthAnonymous = $True
+	$newSite.AppPoolId = $siteName
+	$newSite.Put()
+	
     $server = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebServer" -Filter "Name='$($newSite.Name)'"
     $server.Start()
+
+    Write-Output "Created $siteName website"
 }
 
 function IISWeb([string]$task,$application){
@@ -125,4 +136,18 @@ function CreateAppPool($appPoolName, $userName, $password) {
 
 function CreateAppPoolFromPsake($appPoolName) {
     CreateAppPool $appPoolName $script:vickiUserName $script:vickiPassword
+}
+
+function SetAccessControlList([Parameter(Mandatory=$true)][string]$Path, [Parameter(Mandatory=$true)][string]$Identity)
+{
+	$computerName = (Get-WmiObject win32_computersystem).name
+	$webUser="IUSR_" + $computerName
+	$inherit = [system.security.accesscontrol.InheritanceFlags]"ContainerInherit, ObjectInherit"
+    $propagation = [system.security.accesscontrol.PropagationFlags]"None"
+	$acl = Get-Acl $Path
+	$accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule($Identity, "ReadAndExecute", $inherit, $propagation, "Allow")
+	$acl.AddAccessRule($accessRule)
+	$accessRule = New-Object System.Security.AccessControl.FileSystemAccessRule($webUser, "ReadAndExecute", $inherit, $propagation, "Allow")
+	$acl.AddAccessRule($accessRule)
+	Set-Acl -aclobject $acl $Path
 }
