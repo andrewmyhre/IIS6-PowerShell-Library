@@ -133,7 +133,7 @@ function GetAppPool($name) {
 }
 
 function CreateAppPool($appPoolName, $userName, $password) {
-	if (GetAppPool -name $siteName)
+	if (GetAppPool -name $appPoolName)
 	{
 		Write-Host "Application pool '$appPoolName' already exists"
 		return
