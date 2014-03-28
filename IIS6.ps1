@@ -102,15 +102,17 @@ function CreateWebsite(
 	$newSite.AppPoolId = $siteName
 	$newSite.AppFriendlyName=$siteName
 	$newSite.Put()
+	
+	Write-Host "1"
 	# Do it a few times if it fails as there is a bug with Powershell/WMI
 	if (!$?) 
 	{
 	    $newVDir.Put() 
 	}
-	
+	Write-Host "2"
     $server = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebServer" -Filter "Name='$($newSite.Name)'"
     $server.Start()
-
+Write-Host "3"
     Write-Output "Created $siteName website"
 }
 
