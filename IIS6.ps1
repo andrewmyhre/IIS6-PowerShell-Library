@@ -15,7 +15,7 @@ function DeleteVirtualDirectory( [string]$siteName, [string]$vDirName ) {
   $objIIS = GetIISRoot $siteName
   write-host "Checking existance of IIS://LocalHost/$ws/ROOT/$vDirName"
   if ([System.DirectoryServices.DirectoryEntry]::Exists("IIS://LocalHost/$ws/ROOT/$vDirName")) {
-    write-host "Deleting Virtual Directory $vDirName at $path ..."
+    write-host "Deleting Virtual Directory $vDirName at IIS://LocalHost/$ws/ROOT/$vDirName ..."
     $objIIS.Delete("IIsWebVirtualDir", "$vDirName")
   }
 }
