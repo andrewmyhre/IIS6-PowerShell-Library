@@ -82,6 +82,10 @@ function CreateWebsite(
 	[Parameter(Mandatory=$true)][string]$path, 
 	[Parameter(Mandatory=$true)][string]$identity, 
 	[Parameter(Mandatory=$true)]$password) {
+	
+	Write-Host "identity: $identity"
+	Write-Host "pwd: $password"
+	
     $binding = ([wmiclass]"root/MicrosoftIISv2:ServerBinding").CreateInstance()
     $binding.Hostname = ""
     $binding.IP = ""
@@ -98,6 +102,11 @@ function CreateWebsite(
 	$newSite.AppPoolId = $siteName
 	$newSite.AppFriendlyName=$siteName
 	$newSite.Put()
+	# Do it a few times if it fails as there is a bug with Powershell/WMI
+	if (!$?) 
+	{
+	    $newVDir.Put() 
+	}
 	
     $server = Get-WmiObject -Namespace 'root\MicrosoftIISv2' -Class "IIsWebServer" -Filter "Name='$($newSite.Name)'"
     $server.Start()
